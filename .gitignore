@@ -1,3 +1,8 @@
-﻿/Ink Canvas/obj
-/Ink Canvas/bin
+﻿/FluentCanvas/obj
+/FluentCanvas/bin
+/FluentCanvas.Package/obj
+/FluentCanvas.Package/bin
+/FluentCanvas.Package/AppPackages
+/FluentCanvas.InkAnalyzerCore/obj
+/FluentCanvas.InkAnalyzerCore/bin
 /.vs

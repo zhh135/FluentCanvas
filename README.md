@@ -4,9 +4,9 @@
 [![LOGO](Images/Ink%20Canvas%20Artistry.png?raw=true "LOGO")](# "LOGO")
 -->
 
-<img src="./Images/Ink Canvas Artistry.png" style="width:96px;"/>
+<img src="./Images/FluentCanvas.png" style="width:96px;"/>
 
-# Ink Canvas Artistry
+# FluentCanvas
 [![UPSTREAM](https://img.shields.io/badge/UpStream-WXRIW%2FInk--Canvas-red.svg "LICENSE")](https://github.com/WXRIW/Ink-Canvas)
 [![LICENSE](https://img.shields.io/badge/License-GPL--3.0-red.svg "LICENSE")](./LICENSE)
 [![Latest release](https://img.shields.io/github/release/InkCanvas/Ink-Canvas-Artistry.svg?style=shield)](https://github.com/InkCanvas/Ink-Canvas-Artistry/releases/latest)
@@ -23,7 +23,7 @@
 使用和分发本软件（原名 Ink-Canvas-For-Annotation）前，请您应当且务必知晓相关开源协议，本软件基于 https://github.com/WXRIW/Ink-Canvas 修改而成。对于墨迹功能的相关 issue 提出，可以优先查阅 https://github.com/WXRIW/Ink-Canvas/issues 。
 
 [直接下载](https://github.com/InkCanvas/Ink-Canvas-Artistry/releases/latest "Latest Releases")
-——该安装包使用 Inno Setup Compiler 打包，默认的推荐设置适配希沃六代机的使用。
+——正式分发使用 MSIX 安装包；免安装版本为单文件 `FluentCanvas.exe`，首次运行时会自动注册文件关联与启动项。
 
 ## 🔧 特性
 Support Active Pen (支持压感)
@@ -47,8 +47,8 @@ Support Active Pen (支持压感)
 若因安装了最新版本的 WPS 而导致无法在 WPS 软件内进入 PPT 模式，可以尝试卸载 WPS 后，并清除电脑垃圾、注册表垃圾、删除电脑上所有带 "kingsoft" 名称的文件夹，重新安装 WPS 2021 后，（以上步骤可能有多余步骤），经测试在 WPS 内可以正常进入 PPT 模式。
 
 ### **安装后**程序无法正常启动？
-请检查你的电脑上是否安装了 `.Net Framework 4.7.2` 或更高版本。若没有，请前往官网下载 [.Net 4.7.2](https://dotnet.microsoft.com/en-us/download/dotnet-framework/thank-you/net472-offline-installer)
-。如果仍无法运行，请检查你的电脑上是否安装了 `Microsoft Office`。若没有，请安装后重试
+本软件需要 Windows 10 2004（内部版本 19041）或更高版本。MSIX 安装包与免安装单文件版本均已包含所需的 .NET 与 Windows App SDK 运行时，无需单独安装。
+如果仍无法运行，请检查你的电脑上是否安装了 `Microsoft Office`。若没有，请安装后重试
 
 ### 我该在何处提出功能需求和错误报告？
 

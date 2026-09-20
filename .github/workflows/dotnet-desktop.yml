@@ -11,69 +11,60 @@ jobs:
   build:
     runs-on: windows-latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: x86
+            rid: win-x86
+          - platform: x64
+            rid: win-x64
+          - platform: ARM64
+            rid: win-arm64
+
     steps:
     - name: Checkout
-      uses: actions/checkout@v3.5.2
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
-    # 安装 .NET Core
-    - name: Install .NET Core
-      uses: actions/setup-dotnet@v3.0.3
+    # 安装 .NET 10 SDK
+    - name: Install .NET SDK
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '6.0.x'
-        
-    # 安装 NuGet
-    - name: Setup NuGet
-      uses: NuGet/setup-nuget@v1.2.0
-      with:
-        nuget-version: '5.x'
+        dotnet-version: '10.0.x'
 
-    # 还原 NuGet 包
-    - name: NuGet restore
-      run: nuget restore
-      
     # 添加 MSBuild.exe 到环境变量: https://github.com/microsoft/setup-msbuild
     - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.3.1
+      uses: microsoft/setup-msbuild@v2
 
-    # 编译整个项目
-    - name: Build the solution
-      run: |
-        msbuild -t:restore /p:GitFlow="Github Action"
-        msbuild -target:"Ink Canvas" /p:Configuration=Release /p:Platform="Any CPU" /p:GitFlow="Github Action"
-      env:
-        Configuration: ${{ matrix.configuration }}
+    # 编译主程序（含 FluentCanvas.InkAnalyzerCore）
+    - name: Build app (${{ matrix.platform }})
+      run: msbuild "FluentCanvas\FluentCanvas.csproj" /restore /t:Build /p:Configuration=Release /p:Platform=${{ matrix.platform }}
 
-    - name: Build the solution (x64)
-      run: |
-        msbuild -t:restore /p:GitFlow="Github Action"
-        msbuild -target:"Ink Canvas" /p:Configuration=Release /p:Platform="x64" /p:GitFlow="Github Action"
-      env:
-        Configuration: ${{ matrix.configuration }}
+    # 生成 MSIX（需要 Visual Studio 的 Windows Application Packaging 组件）
+    - name: Build MSIX (${{ matrix.platform }})
+      run: msbuild "FluentCanvas.Package\FluentCanvas.Package.wapproj" /restore /t:Build /p:Configuration=Release /p:Platform=${{ matrix.platform }}
 
-    - name: Build the solution (ARM64)
-      run: |
-        msbuild -t:restore /p:GitFlow="Github Action"
-        msbuild -target:"Ink Canvas" /p:Configuration=Release /p:Platform="ARM64" /p:GitFlow="Github Action"
-      env:
-        Configuration: ${{ matrix.configuration }}
-        
+    # 生成单文件免安装版本（unpackaged / PublishSingleFile）
+    - name: Publish unpackaged single-file (${{ matrix.rid }})
+      run: dotnet publish "FluentCanvas\FluentCanvas.csproj" -c Release -p:Platform=${{ matrix.platform }} -p:PublishProfile=unpackaged-${{ matrix.rid }}
+
     # 上传编译成品
-    - name: Upload to artifact
-      uses: actions/upload-artifact@main
+    - name: Upload app artifact (${{ matrix.platform }})
+      uses: actions/upload-artifact@v4
       with:
-        name: Ink Canvas Artistry
-        path: Ink Canvas/bin/Release
-        
-    - name: Upload to artifact (x64)
-      uses: actions/upload-artifact@main
+        name: FluentCanvas (${{ matrix.platform }})
+        path: FluentCanvas/bin/${{ matrix.platform }}/Release
+
+    - name: Upload MSIX artifact (${{ matrix.platform }})
+      uses: actions/upload-artifact@v4
       with:
-        name: Ink Canvas Artistry (x64)
-        path: Ink Canvas/bin/x64/Release
-        
-    - name: Upload to artifact (ARM64)
-      uses: actions/upload-artifact@main
+        name: FluentCanvas MSIX (${{ matrix.platform }})
+        path: FluentCanvas.Package/AppPackages
+
+    - name: Upload unpackaged single-file artifact (${{ matrix.rid }})
+      uses: actions/upload-artifact@v4
       with:
-        name: Ink Canvas Artistry (ARM64)
-        path: Ink Canvas/bin/ARM64/Release
+        name: FluentCanvas unpackaged (${{ matrix.rid }})
+        path: FluentCanvas/bin/publish/unpackaged/${{ matrix.rid }}
