@@ -14,21 +14,16 @@ using System.Windows.Media;
 using Application = System.Windows.Application;
 using File = System.IO.File;
 using Microsoft.Office.Core;
+using Windows.Win32;
 
 namespace FluentCanvas
 {
     public partial class MainWindow : Window
     {
-        [DllImport("ole32.dll", CharSet = CharSet.Unicode)]
-        private static extern int CLSIDFromProgID(string progId, out Guid clsid);
-
-        [DllImport("oleaut32.dll", PreserveSig = false)]
-        private static extern void GetActiveObject(ref Guid clsid, IntPtr reserved, [MarshalAs(UnmanagedType.Interface)] out object value);
-
-        private static object GetActiveComObject(string progId)
+        private static unsafe object GetActiveComObject(string progId)
         {
-            Marshal.ThrowExceptionForHR(CLSIDFromProgID(progId, out Guid clsid));
-            GetActiveObject(ref clsid, IntPtr.Zero, out object value);
+            PInvoke.CLSIDFromProgID(progId, out Guid clsid).ThrowOnFailure();
+            PInvoke.GetActiveObject(clsid, null, out object value).ThrowOnFailure();
             return value;
         }
 

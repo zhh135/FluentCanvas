@@ -22,12 +22,16 @@
 		<RuntimeIdentifier Condition="'$(Platform)' == 'x64'">win-x64</RuntimeIdentifier>
 		<RuntimeIdentifier Condition="'$(Platform)' == 'ARM64'">win-arm64</RuntimeIdentifier>
 		<PublishTrimmed>false</PublishTrimmed>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\FluentCanvas.InkAnalyzerCore\FluentCanvas.InkAnalyzerCore.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.333">
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
 		<PackageReference Include="iNKORE.UI.WPF.Modern" Version="0.10.2.1" />
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260804001" />
 		<PackageReference Include="Microsoft.Office.Interop.PowerPoint">

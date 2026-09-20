@@ -2,7 +2,8 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
+using Windows.Win32;
+using Windows.Win32.UI.Shell;
 
 namespace FluentCanvas.Helpers
 {
@@ -20,9 +21,6 @@ namespace FluentCanvas.Helpers
         private const string RegisteredApplicationsKeyPath = @"Software\RegisteredApplications";
         private const string CapabilitiesKeyPath = @"Software\FluentCanvas\Capabilities";
         private const string AppPathsKeyPath = @"Software\Microsoft\Windows\CurrentVersion\App Paths\FluentCanvas.exe";
-
-        private const int SHCNE_ASSOCCHANGED = 0x08000000;
-        private const uint SHCNF_IDLIST = 0x0000;
 
         private static readonly string[] LegacyStartupValueNames =
         {
@@ -279,7 +277,7 @@ namespace FluentCanvas.Helpers
                 appPath.SetValue("Path", Path.GetDirectoryName(exePath));
             }
 
-            SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, IntPtr.Zero, IntPtr.Zero);
+            unsafe { PInvoke.SHChangeNotify(SHCNE_ID.SHCNE_ASSOCCHANGED, SHCNF_FLAGS.SHCNF_IDLIST, null, null); }
             LogHelper.WriteLogToFile("InstallHelper | Registered unpackaged file associations.", LogHelper.LogType.Event);
         }
 
@@ -309,11 +307,8 @@ namespace FluentCanvas.Helpers
                 registeredApplications?.DeleteValue(ApplicationName, false);
             }
 
-            SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, IntPtr.Zero, IntPtr.Zero);
+            unsafe { PInvoke.SHChangeNotify(SHCNE_ID.SHCNE_ASSOCCHANGED, SHCNF_FLAGS.SHCNF_IDLIST, null, null); }
             LogHelper.WriteLogToFile("InstallHelper | Unregistered unpackaged file associations.", LogHelper.LogType.Event);
         }
-
-        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
-        private static extern void SHChangeNotify(int eventId, uint flags, IntPtr item1, IntPtr item2);
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
+using Windows.Win32;
+using Windows.Win32.Foundation;
 
 namespace FluentCanvas.Helpers
 {
@@ -175,25 +177,24 @@ namespace FluentCanvas.Helpers
 
         #region "Methods"
 
-        [DllImport("shell32.dll", SetLastError = true)]
-        private static extern int SHGetPropertyStoreForWindow(IntPtr handle, ref Guid riid, ref IPropertyStore propertyStore);
-
-        public static void DisableEdgeGestures(IntPtr hwnd, bool enable)
+        public static unsafe void DisableEdgeGestures(IntPtr hwnd, bool enable)
         {
-            IPropertyStore pPropStore = null;
-            int hr = 0;
-            hr = SHGetPropertyStoreForWindow(hwnd, ref IID_PROPERTY_STORE, ref pPropStore);
-            if (hr == 0)
+            Guid iid = IID_PROPERTY_STORE;
+            HRESULT hr = PInvoke.SHGetPropertyStoreForWindow((HWND)hwnd, &iid, out object propertyStore);
+            if (!hr.Succeeded)
             {
-                PropertyKey propKey = new PropertyKey();
-                propKey.fmtid = DISABLE_TOUCH_SCREEN;
-                propKey.pid = 2;
-                PropVariant var = new PropVariant();
-                var.vt = VT_BOOL;
-                var.boolVal = enable;
-                pPropStore.SetValue(ref propKey, ref var);
-                Marshal.FinalReleaseComObject(pPropStore);
+                return;
             }
+
+            IPropertyStore pPropStore = (IPropertyStore)propertyStore;
+            PropertyKey propKey = new PropertyKey();
+            propKey.fmtid = DISABLE_TOUCH_SCREEN;
+            propKey.pid = 2;
+            PropVariant var = new PropVariant();
+            var.vt = VT_BOOL;
+            var.boolVal = enable;
+            pPropStore.SetValue(ref propKey, ref var);
+            Marshal.FinalReleaseComObject(pPropStore);
         }
 
         #endregion

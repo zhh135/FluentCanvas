@@ -1,23 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.UI.Input.KeyboardAndMouse;
 
 namespace FluentCanvas
 {
     static class Hotkey
     {
-        #region 系统api
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool RegisterHotKey(IntPtr hWnd, int id, HotkeyModifiers fsModifiers, uint vk);
-
-        [DllImport("user32.dll")]
-        static extern bool UnregisterHotKey(IntPtr hWnd, int id);
-        #endregion
-
         /// <summary>
         /// 注册快捷键
         /// </summary>
@@ -38,7 +31,7 @@ namespace FluentCanvas
             int id = keyid++;
 
             var vk = KeyInterop.VirtualKeyFromKey(key);
-            if (!RegisterHotKey(hwnd, id, fsModifiers, (uint)vk))
+            if (!PInvoke.RegisterHotKey((HWND)hwnd, id, (HOT_KEY_MODIFIERS)fsModifiers, (uint)vk))
             {
                 //throw new Exception("regist hotkey fail.");
                 return false;
@@ -52,7 +45,7 @@ namespace FluentCanvas
         /// </summary> 
         static IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
-            if (msg == WM_HOTKEY)
+            if (msg == (int)PInvoke.WM_HOTKEY)
             {
                 int id = wParam.ToInt32();
                 if (keymap.TryGetValue(id, out var callback))
@@ -74,11 +67,10 @@ namespace FluentCanvas
             foreach (KeyValuePair<int, HotKeyCallBackHanlder> var in keymap)
             {
                 if (var.Value == callBack)
-                    UnregisterHotKey(hWnd, var.Key);
+                    PInvoke.UnregisterHotKey((HWND)hWnd, var.Key);
             }
         }
 
-        const int WM_HOTKEY = 0x312;
         static int keyid = 10;
         static Dictionary<int, HotKeyCallBackHanlder> keymap = new Dictionary<int, HotKeyCallBackHanlder>();
 

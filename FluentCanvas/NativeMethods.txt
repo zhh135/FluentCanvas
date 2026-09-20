@@ -1,0 +1,12 @@
+GetForegroundWindow
+GetWindowText
+GetClassName
+GetWindowRect
+GetWindowThreadProcessId
+RegisterHotKey
+UnregisterHotKey
+WM_HOTKEY
+SHGetPropertyStoreForWindow
+SHChangeNotify
+CLSIDFromProgID
+GetActiveObject

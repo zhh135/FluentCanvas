@@ -1,15 +1,11 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 
 namespace FluentCanvas.Helpers
 {
     internal class SoftwareLauncher
     {
-        [DllImport("user32.dll")]
-        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
         public static void LaunchEasiCamera(string softwareName)
         {
             string executablePath = FindEasiCameraExecutablePath(softwareName);

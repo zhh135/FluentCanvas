@@ -1,77 +1,45 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Text;
+using Windows.Win32;
+using Windows.Win32.Foundation;
 
 namespace FluentCanvas.Helpers
 {
     internal class ForegroundWindowInfo
     {
-        [DllImport("user32.dll")]
-        private static extern IntPtr GetForegroundWindow();
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
-
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        private static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
-
-        [DllImport("user32.dll")]
-        private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct RECT
-        {
-            public int Left;
-            public int Top;
-            public int Right;
-            public int Bottom;
-
-            public int Width => Right - Left;
-            public int Height => Bottom - Top;
-        }
-
         public static string WindowTitle()
         {
-            IntPtr foregroundWindowHandle = GetForegroundWindow();
+            HWND foregroundWindowHandle = PInvoke.GetForegroundWindow();
 
-            const int nChars = 256;
-            StringBuilder windowTitle = new StringBuilder(nChars);
-            GetWindowText(foregroundWindowHandle, windowTitle, nChars);
+            Span<char> windowTitle = stackalloc char[256];
+            int length = PInvoke.GetWindowText(foregroundWindowHandle, windowTitle);
 
-            return windowTitle.ToString();
+            return windowTitle.Slice(0, length).ToString();
         }
 
         public static string WindowClassName()
         {
-            IntPtr foregroundWindowHandle = GetForegroundWindow();
+            HWND foregroundWindowHandle = PInvoke.GetForegroundWindow();
 
-            const int nChars = 256;
-            StringBuilder className = new StringBuilder(nChars);
-            GetClassName(foregroundWindowHandle, className, nChars);
+            Span<char> className = stackalloc char[256];
+            int length = PInvoke.GetClassName(foregroundWindowHandle, className);
 
-            return className.ToString();
+            return className.Slice(0, length).ToString();
         }
 
         public static RECT WindowRect()
         {
-            IntPtr foregroundWindowHandle = GetForegroundWindow();
+            HWND foregroundWindowHandle = PInvoke.GetForegroundWindow();
 
-            RECT windowRect;
-            GetWindowRect(foregroundWindowHandle, out windowRect);
+            PInvoke.GetWindowRect(foregroundWindowHandle, out RECT windowRect);
 
             return windowRect;
         }
 
         public static string ProcessName()
         {
-            IntPtr foregroundWindowHandle = GetForegroundWindow();
-            uint processId;
-            GetWindowThreadProcessId(foregroundWindowHandle, out processId);
+            HWND foregroundWindowHandle = PInvoke.GetForegroundWindow();
+            PInvoke.GetWindowThreadProcessId(foregroundWindowHandle, out uint processId);
 
             try
             {
