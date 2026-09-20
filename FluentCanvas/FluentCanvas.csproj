@@ -60,8 +60,6 @@
 		<Resource Include="Resources\DeveloperAvatars\Raspberry-Monster.jpg" />
 		<Resource Include="Resources\DeveloperAvatars\STBBRD.png" />
 		<Resource Include="Resources\DeveloperAvatars\WXRIW.png" />
-		
-		<Resource Include="Resources\FluentCanvas.ico" />
 		<Resource Include="Resources\Segoe Fluent Icons.ttf" />
 		<Resource Include="Resources\Icons-png\check-box-background.png" />
 		<Resource Include="Resources\Icons-png\checked-black.png" />
