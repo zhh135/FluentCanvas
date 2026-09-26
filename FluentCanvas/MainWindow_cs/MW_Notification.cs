@@ -1,5 +1,4 @@
-﻿using FluentCanvas.Helpers;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 
 namespace FluentCanvas
@@ -19,24 +18,6 @@ namespace FluentCanvas
             }
 
             await ViewModel.Notifications.ShowAsync(notice, isShowImmediately);
-        }
-
-        private void Notifications_VisibilityChanged(object sender, bool visible)
-        {
-            if (!Dispatcher.CheckAccess())
-            {
-                Dispatcher.BeginInvoke(() => Notifications_VisibilityChanged(sender, visible));
-                return;
-            }
-
-            if (visible)
-            {
-                AnimationsHelper.ShowWithSlideFromBottomAndFade(GridNotifications);
-            }
-            else
-            {
-                AnimationsHelper.HideWithSlideAndFade(GridNotifications);
-            }
         }
     }
 }

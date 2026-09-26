@@ -1,4 +1,6 @@
 ﻿using FluentCanvas.Helpers;
+using FluentCanvas.Services;
+using FluentCanvas.Views;
 using Microsoft.Win32;
 using System;
 using System.IO;
@@ -19,7 +21,10 @@ namespace FluentCanvas
             if (inkCanvas.Visibility != Visibility.Visible) return;
             AnimationsHelper.HideWithSlideAndFade(BorderTools);
             AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
-            GridNotifications.Visibility = Visibility.Collapsed;
+            if (Locator.Get<IAppViewService>().TryGet<INotificationsView>(out var notificationsView))
+            {
+                notificationsView.HideView();
+            }
             SaveInkCanvasFile(true, true);
         }
 

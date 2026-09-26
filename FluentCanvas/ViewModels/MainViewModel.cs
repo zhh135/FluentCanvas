@@ -4,8 +4,14 @@ namespace FluentCanvas.ViewModels
 {
     public sealed partial class MainViewModel : ObservableObject
     {
-        public NotificationsViewModel Notifications { get; } = new NotificationsViewModel();
+        public MainViewModel(NotificationsViewModel notifications, SettingsViewModel settings)
+        {
+            Notifications = notifications;
+            Settings = settings;
+        }
 
-        public SettingsViewModel Settings { get; } = new SettingsViewModel();
+        public NotificationsViewModel Notifications { get; }
+
+        public SettingsViewModel Settings { get; }
     }
 }

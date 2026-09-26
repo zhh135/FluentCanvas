@@ -9,7 +9,6 @@ namespace FluentCanvas
 {
     public partial class MainWindow : Window
     {
-        Timer timerCheckPPT = new Timer();
         Timer timerKillProcess = new Timer();
         Timer timerCheckAutoFold = new Timer();
         string AvailableLatestVersion = null;
@@ -18,8 +17,6 @@ namespace FluentCanvas
 
         private void InitTimers()
         {
-            timerCheckPPT.Elapsed += TimerCheckPPT_Elapsed;
-            timerCheckPPT.Interval = 1000;
             timerKillProcess.Elapsed += TimerKillProcess_Elapsed;
             timerKillProcess.Interval = 5000;
             timerCheckAutoFold.Elapsed += timerCheckAutoFold_Elapsed;

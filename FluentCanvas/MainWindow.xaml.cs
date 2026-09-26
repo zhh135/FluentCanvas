@@ -1,4 +1,5 @@
 using FluentCanvas.Helpers;
+using FluentCanvas.Services;
 using FluentCanvas.ViewModels;
 using iNKORE.UI.WPF.Modern;
 using System;
@@ -28,24 +29,25 @@ namespace FluentCanvas
             */
             InitializeComponent();
 
-            ViewModel = new MainViewModel();
+            ViewModel = Locator.Get<MainViewModel>();
             DataContext = ViewModel;
-            ViewModel.Notifications.VisibilityChanged += Notifications_VisibilityChanged;
+
+            Locator.Get<IInkBoardService>().Attach(inkCanvas);
+            ShellService.Window = this;
+
+            SettingsPanel.ToggleSwitchEnableTwoFingerRotationOnSelection.Toggled += ToggleSwitchEnableTwoFingerRotation_Toggled;
+            SettingsPanel.ToggleSwitchEnableInkToShape.Toggled += ToggleSwitchEnableInkToShape_Toggled;
 
             BlackboardLeftSide.Visibility = Visibility.Collapsed;
             BlackboardCenterSide.Visibility = Visibility.Collapsed;
             BlackboardRightSide.Visibility = Visibility.Collapsed;
 
             BorderTools.Visibility = Visibility.Collapsed;
-            BorderSettings.Visibility = Visibility.Collapsed;
+            SettingsPanel.Visibility = Visibility.Collapsed;
 
             BtnPPTSlideShowEnd.Visibility = Visibility.Collapsed;
-            PPTNavigationBottomLeft.Visibility = Visibility.Collapsed;
-            PPTNavigationBottomRight.Visibility = Visibility.Collapsed;
-            PPTNavigationSidesLeft.Visibility = Visibility.Collapsed;
-            PPTNavigationSidesRight.Visibility = Visibility.Collapsed;
 
-            BorderSettings.Margin = new Thickness(0, 150, 0, 150);
+            SettingsPanel.Margin = new Thickness(0, 150, 0, 150);
 
             TwoFingerGestureBorder.Visibility = Visibility.Collapsed;
             BoardTwoFingerGestureBorder.Visibility = Visibility.Collapsed;
@@ -83,6 +85,7 @@ namespace FluentCanvas
             }
 
             InitTimers();
+            InitPowerPoint();
             timeMachine.OnRedoStateChanged += TimeMachine_OnRedoStateChanged;
             timeMachine.OnUndoStateChanged += TimeMachine_OnUndoStateChanged;
             inkCanvas.Strokes.StrokesChanged += StrokesOnStrokesChanged;
@@ -90,7 +93,7 @@ namespace FluentCanvas
             Microsoft.Win32.SystemEvents.UserPreferenceChanged += SystemEvents_UserPreferenceChanged;
             try
             {
-                if (File.Exists("SpecialVersion.ini")) SpecialVersionResetToSuggestion_Click();
+                if (File.Exists("SpecialVersion.ini")) SettingsPanel.SpecialVersionReset();
             }
             catch (Exception ex)
             {
@@ -182,7 +185,7 @@ namespace FluentCanvas
             ThemeManager.Current.ApplicationTheme = ApplicationTheme.Light;
             SystemEvents_UserPreferenceChanged(null, null);
 
-            AppVersionTextBlock.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            SettingsPanel.AppVersionTextBlock.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             LogHelper.WriteLogToFile("FluentCanvas Loaded", LogHelper.LogType.Event);
             isLoaded = true;
             RegisterGlobalHotkeys();

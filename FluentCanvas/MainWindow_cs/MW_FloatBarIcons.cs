@@ -1,4 +1,4 @@
-﻿using FluentCanvas.Helpers;
+using FluentCanvas.Helpers;
 using System;
 using System.Threading.Tasks;
 using System.Windows;
@@ -152,7 +152,7 @@ namespace FluentCanvas
             PenPalette.Visibility = Visibility.Collapsed;
             BoardPenPalette.Visibility = Visibility.Collapsed;
             BoardDeleteIcon.Visibility = Visibility.Collapsed;
-            BorderSettings.Visibility = Visibility.Collapsed;
+            SettingsPanel.Visibility = Visibility.Collapsed;
         }
 
         private async void HideSubPanels(String mode = null, bool autoAlignCenter = false)
@@ -162,7 +162,7 @@ namespace FluentCanvas
             AnimationsHelper.HideWithSlideAndFade(PenPalette);
             AnimationsHelper.HideWithSlideAndFade(BoardPenPalette);
             AnimationsHelper.HideWithSlideAndFade(BoardDeleteIcon);
-            AnimationsHelper.HideWithSlideAndFade(BorderSettings, 0.5);
+            AnimationsHelper.HideWithSlideAndFade(SettingsPanel, 0.5);
             AnimationsHelper.HideWithSlideAndFade(TwoFingerGestureBorder);
             AnimationsHelper.HideWithSlideAndFade(BoardTwoFingerGestureBorder);
             if (ToggleSwitchDrawShapeBorderAutoHide.IsOn)
@@ -316,10 +316,7 @@ namespace FluentCanvas
             {
                 currentMode = 1;
                 //进入画板
-                PPTNavigationBottomLeft.Visibility = Visibility.Collapsed;
-                PPTNavigationBottomRight.Visibility = Visibility.Collapsed;
-                PPTNavigationSidesLeft.Visibility = Visibility.Collapsed;
-                PPTNavigationSidesRight.Visibility = Visibility.Collapsed;
+                PptNavView.HidePanels();
 
                 new Thread(new ThreadStart(() =>
                 {
@@ -349,16 +346,9 @@ namespace FluentCanvas
 
                 if (BtnPPTSlideShowEnd.Visibility == Visibility.Visible)
                 {
-                    if (Settings.PowerPointSettings.IsShowBottomPPTNavigationPanel)
-                    {
-                        AnimationsHelper.ShowWithScaleFromBottom(PPTNavigationBottomLeft);
-                        AnimationsHelper.ShowWithScaleFromBottom(PPTNavigationBottomRight);
-                    }
-                    if (Settings.PowerPointSettings.IsShowSidePPTNavigationPanel)
-                    {
-                        AnimationsHelper.ShowWithScaleFromLeft(PPTNavigationSidesLeft);
-                        AnimationsHelper.ShowWithScaleFromRight(PPTNavigationSidesRight);
-                    }
+                    PptNavView.ShowPanels(
+                        Settings.PowerPointSettings.IsShowBottomPPTNavigationPanel,
+                        Settings.PowerPointSettings.IsShowSidePPTNavigationPanel);
                 }
 
                 if (Settings.Automation.IsAutoSaveStrokesAtClear && inkCanvas.Strokes.Count > Settings.Automation.MinimumAutomationStrokeNumber)
@@ -919,29 +909,16 @@ namespace FluentCanvas
         #region Right Side Panel
 
         public static bool CloseIsFromButton = false;
-        private void BtnExit_Click(object sender, RoutedEventArgs e)
-        {
-            CloseIsFromButton = true;
-            Close();
-        }
-
-        private void BtnRestart_Click(object sender, RoutedEventArgs e)
-        {
-            Process.Start(System.Windows.Forms.Application.ExecutablePath, "-m");
-
-            CloseIsFromButton = true;
-            Application.Current.Shutdown();
-        }
 
         private void BtnSettings_Click(object sender, RoutedEventArgs e)
         {
-            if (BorderSettings.Visibility == Visibility.Visible)
+            if (SettingsPanel.Visibility == Visibility.Visible)
             {
-                AnimationsHelper.HideWithSlideAndFade(BorderSettings, 0.5);
+                AnimationsHelper.HideWithSlideAndFade(SettingsPanel, 0.5);
             }
             else
             {
-                AnimationsHelper.ShowWithSlideFromBottomAndFade(BorderSettings, 0.5);
+                AnimationsHelper.ShowWithSlideFromBottomAndFade(SettingsPanel, 0.5);
             }
         }
 

@@ -1,4 +1,5 @@
 using FluentCanvas.Helpers;
+using FluentCanvas.Services;
 using iNKORE.UI.WPF.Modern.Controls;
 using Microsoft.Windows.AppLifecycle;
 using System;
@@ -113,6 +114,13 @@ namespace FluentCanvas
 
             StartArgs = e.Args;
             pendingActivationFile = FindInkFile(e.Args);
+
+            ServiceRegistration.RegisterServices();
+            Locator.Initialize();
+
+            var mainWindow = new MainWindow();
+            this.MainWindow = mainWindow;
+            mainWindow.Show();
         }
 
         private void AppInstance_Activated(object sender, AppActivationArguments args)

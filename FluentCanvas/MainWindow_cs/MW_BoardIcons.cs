@@ -23,7 +23,7 @@ namespace FluentCanvas
             {
                 if (inkColor == 0) lastBoardInkColor = 5;
             }
-            ComboBoxTheme_SelectionChanged(null, null);
+            SystemEvents_UserPreferenceChanged(null, null);
             CheckColorTheme(true);
             if (BoardPen.Opacity == 1)
             {

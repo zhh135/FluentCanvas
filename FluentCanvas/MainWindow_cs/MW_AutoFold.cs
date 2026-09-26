@@ -46,10 +46,7 @@ namespace FluentCanvas
 
             await Dispatcher.InvokeAsync(() =>
             {
-                PPTNavigationBottomLeft.Visibility = Visibility.Collapsed;
-                PPTNavigationBottomRight.Visibility = Visibility.Collapsed;
-                PPTNavigationSidesLeft.Visibility = Visibility.Collapsed;
-                PPTNavigationSidesRight.Visibility = Visibility.Collapsed;
+                PptNavView.HidePanels();
                 ViewboxFloatingBarMarginAnimation();
                 HideSubPanels("cursor");
                 SidePannelMarginAnimation(-16);
@@ -83,16 +80,9 @@ namespace FluentCanvas
             {
                 if (BtnPPTSlideShowEnd.Visibility == Visibility.Visible)
                 {
-                    if (Settings.PowerPointSettings.IsShowBottomPPTNavigationPanel)
-                    {
-                        AnimationsHelper.ShowWithScaleFromBottom(PPTNavigationBottomLeft);
-                        AnimationsHelper.ShowWithScaleFromBottom(PPTNavigationBottomRight);
-                    }
-                    if (Settings.PowerPointSettings.IsShowSidePPTNavigationPanel)
-                    {
-                        AnimationsHelper.ShowWithScaleFromLeft(PPTNavigationSidesLeft);
-                        AnimationsHelper.ShowWithScaleFromRight(PPTNavigationSidesRight);
-                    }
+                    PptNavView.ShowPanels(
+                        Settings.PowerPointSettings.IsShowBottomPPTNavigationPanel,
+                        Settings.PowerPointSettings.IsShowSidePPTNavigationPanel);
                 }
                 ViewboxFloatingBarMarginAnimation();
                 SidePannelMarginAnimation(-40);

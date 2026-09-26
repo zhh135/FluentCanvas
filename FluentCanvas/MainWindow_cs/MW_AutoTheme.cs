@@ -34,14 +34,6 @@ namespace FluentCanvas
             }
         }
 
-        private void ComboBoxTheme_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!isLoaded) return;
-            Settings.Appearance.Theme = ComboBoxTheme.SelectedIndex;
-            SystemEvents_UserPreferenceChanged(null, null);
-            SaveSettingsToFile();
-        }
-
         private void SetBoardTheme()
         {
             var lightBoardUri = new Uri("Resources/Styles/Light-Board.xaml", UriKind.Relative);
